@@ -2,6 +2,6 @@
 extern p;
 int main()
 {
-	printf("test");
+	printf("testqwertyuiop");
 	return 0;
 }
