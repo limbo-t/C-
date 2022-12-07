@@ -1,54 +1,87 @@
 #include<stdio.h>
-#include<math.h>
-extern double data[24];
-extern int n;
-void fun1(double data[])
+#include<string.h>
+#include<stdlib.h>
+typedef struct list
 {
-	double sum,max,min;
-	double average;
-	sum = max = min = data[0];
-	for (int i = 1; i < n; i++)
-	{
-		if (data[i] < min)
-			min = data[i];
-		if (data[i] > max)
-			max = data[i];
-		sum += data[i];
-	}
-	average = sum / n;
-	for (int i = 0; i < n; i++)
-		data[i] = (data[i] - average) / (max - min);
-	return;
-}
-void fun2(double data[])
-{
-	double sum=0;
-	double average,biaozhuncha=0;
-	for (int i = 0; i < n; i++)
-	{
-		sum += data[i];
-	}
-	average = sum / n;
-	for (int i = 0; i < n; i++)
-	{
-		biaozhuncha += pow(average - data[i], 2);
-	}
-	biaozhuncha /= n;
-	biaozhuncha = sqrt(biaozhuncha);
-	for (int i = 0; i < n; i++)
-	{
-		data[i] = (data[i] - average) / biaozhuncha;
-	}
-}
+	int num;
+	struct list* next;
+}LIST;
 int main()
 {
-	int par;
-	scanf("%d", &par);
-	if (par == 1)
-		fun1(data);
-	else if (par == 2)
-		fun2(data);
-	for (int i = 0; i < n; i++)
-		printf("%+.16lf\n", data[i]);
+	LIST* node, * head;
+	node = (LIST*)malloc(sizeof(LIST));
+	node->next = NULL;
+	head = node;
+	int n;
+	scanf("%d", &n);
+	while (1)
+	{
+		if (n <= 0)
+		{
+			node->next = NULL;
+			break;
+		}
+		scanf("%d", &node->num);
+		node->next= (LIST*)malloc(sizeof(LIST));
+		n--;
+		if (n <= 0)
+		{
+			node->next = NULL;
+			break;
+		}
+		node = node->next;
+		
+	}
+	node = head;
+
+
+	int key;
+	scanf("%d", &key);
+	LIST* now = head->next;
+	node = head;
+	while (1)
+	{
+		if (head->num == key)
+		{
+			head = head->next;
+			free(node);
+			node = head;
+			now = now->next;
+			continue;
+		}
+		if (now->num == key)
+		{
+			node->next = now->next;
+			free(now);
+			now = node->next;
+			if (now == NULL)
+				break;
+			continue;
+		}
+		if (now->next == NULL)
+			break;
+		now = now->next;
+		node = node->next;
+	}
+	node = head;
+	while (1)
+	{
+		printf("%d ", node->num);
+		if (node->next == NULL)
+			break;
+		node = node->next;
+	}
+	node = head;
+	now = node->next;
+	while (1)
+	{
+		free(node);
+		if (now == NULL)
+			break;
+		node = now;
+		now = node->next;
+		if (now == NULL)
+			break;
+	}
 	return 0;
 }
