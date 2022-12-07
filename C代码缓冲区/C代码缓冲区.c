@@ -1,87 +1,103 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-typedef struct list
+
+
+typedef struct point
 {
 	int num;
-	struct list* next;
-}LIST;
+	struct nearpoint* head,*tail;
+}POINT;
+typedef struct nearpoint
+{
+	int point;
+	struct nearpoint* next,*last;
+}NEARPOINT;
+
+POINT *pp[5001];
 int main()
 {
-	LIST* node, * head;
-	node = (LIST*)malloc(sizeof(LIST));
-	node->next = NULL;
-	head = node;
-	int n;
-	scanf("%d", &n);
-	while (1)
+	int n, m,x1,x2;
+	NEARPOINT* node;
+	scanf("%d %d", &n, &m);
+	for (int i = 0; i < m; i++)
 	{
-		if (n <= 0)
+		scanf("%d %d", &x2, &x1);
+		if (pp[x1] == NULL)
 		{
-			node->next = NULL;
-			break;
+			pp[x1] = (POINT*)malloc(sizeof(POINT));
+			pp[x1]->num = x1;
+			pp[x1]->head = NULL;
+			pp[x1]->tail = NULL;
 		}
-		scanf("%d", &node->num);
-		node->next= (LIST*)malloc(sizeof(LIST));
-		n--;
-		if (n <= 0)
+		if (pp[x2] == NULL)
 		{
-			node->next = NULL;
-			break;
+			pp[x2] = (POINT*)malloc(sizeof(POINT));
+			pp[x2]->num = x2;
+			pp[x2]->head = NULL;
+			pp[x2]->tail = NULL;
 		}
-		node = node->next;
-		
+		if (pp[x1]->head == NULL)
+		{
+			pp[x1]->head = (NEARPOINT*)malloc(sizeof(NEARPOINT));
+			pp[x1]->head->point = pp[x2]->num;
+			pp[x1]->head->next = NULL;
+			pp[x1]->head->last = NULL;
+			pp[x1]->tail = pp[x1]->head->next;
+		}
+		else
+		{
+			node = pp[x1]->head;
+			while (node->next != NULL)
+			{
+				node = node->next;
+			}
+			node->next = (NEARPOINT*)malloc(sizeof(NEARPOINT));
+			node->next->point = pp[x2]->num;
+			node->next->next = NULL;
+			node->next->last = node;
+			pp[x1]->tail = node->next;
+		}
+		if (pp[x2]->head == NULL)
+		{
+			pp[x2]->head = (NEARPOINT*)malloc(sizeof(NEARPOINT));
+			pp[x2]->head->point = pp[x1]->num;
+			pp[x2]->head->next = NULL;
+			pp[x2]->head->last = NULL;
+			pp[x1]->tail = pp[x1]->head->next;
+		}
+		else
+		{
+			node = pp[x2]->head;
+			while (node->next != NULL)
+			{
+				node = node->next;
+			}
+			node->next = (NEARPOINT*)malloc(sizeof(NEARPOINT));
+			node->next->point = pp[x1]->num;
+			node->next->next = NULL;
+			node->next->last = node;
+			pp[x2]->tail = node->next;
+		}
 	}
-	node = head;
-
-
-	int key;
-	scanf("%d", &key);
-	LIST* now = head->next;
-	node = head;
-	while (1)
+	for (int i = 1; i <= n; i++)
 	{
-		if (head->num == key)
+		int points = 1;
+		node = pp[i]->head;
+		while (node->next != NULL)
 		{
-			head = head->next;
-			free(node);
-			node = head;
-			now = now->next;
-			continue;
+			node = node->next;
+			points++;
 		}
-		if (now->num == key)
+		printf("%d ", points);
+		node = pp[i]->tail;
+		while (node->last != NULL)
 		{
-			node->next = now->next;
-			free(now);
-			now = node->next;
-			if (now == NULL)
-				break;
-			continue;
+			printf("%d ", node->point);
+			node = node->last;
 		}
-		if (now->next == NULL)
-			break;
-		now = now->next;
-		node = node->next;
-	}
-	node = head;
-	while (1)
-	{
-		printf("%d ", node->num);
-		if (node->next == NULL)
-			break;
-		node = node->next;
-	}
-	node = head;
-	now = node->next;
-	while (1)
-	{
-		free(node);
-		if (now == NULL)
-			break;
-		node = now;
-		now = node->next;
-		if (now == NULL)
-			break;
+		printf("%d", node->point);
+		printf("\n");
 	}
 	return 0;
 }
